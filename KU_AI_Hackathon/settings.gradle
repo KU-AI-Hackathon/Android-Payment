@@ -1,0 +1,2 @@
+rootProject.name='KU_AI_Hackathon'
+include ':app'
