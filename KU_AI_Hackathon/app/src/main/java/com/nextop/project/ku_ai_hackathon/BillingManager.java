@@ -36,6 +36,7 @@ public class BillingManager implements PurchasesUpdatedListener {
     // 초기화 시 입력 받거나 생성되는 멤버 변수들.
     private BillingClient mBillingClient;
     private Activity mActivity;
+    MainActivity ma;
     private ConsumeResponseListener mConsumResListnere;
 
     @Override
@@ -56,6 +57,8 @@ public class BillingManager implements PurchasesUpdatedListener {
                         .build();
                 mBillingClient.consumeAsync( consumeParams , mConsumResListnere );
             }
+
+            ma.purchaseSuccess();
         }
 
         // 사용자가 결제를 취소한 경우.
@@ -79,9 +82,9 @@ public class BillingManager implements PurchasesUpdatedListener {
 
 
     // 생성자.
-    public BillingManager( Activity _activity )
+    public BillingManager( Activity _activity, MainActivity ma )
     {
-
+        this.ma = ma;
 
         // 초기화 시 입력 받은 값들을 넣어 줍니다.
         mActivity = _activity;
@@ -104,6 +107,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     connectStatus = connectStatusTypes.connected;
                     Log.d(TAG, "구글 결제 서버에 접속을 성공하였습니다.");
+                    get_Sku_Detail_List();
                 }
 
                 // 접속이 실패한 경우, 처리.
@@ -156,7 +160,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
         // 구글의 상품 정보들의 ID를 만들어 줍니다.
         List<String> Sku_ID_List = new ArrayList<>();
-        Sku_ID_List.add( "gwango_1000" );
+        Sku_ID_List.add( "mask_1000" );
 
 
         // SkuDetailsParam 객체를 만들어 줍니다. (1회성 소모품에 대한)
@@ -184,7 +188,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
                         // 응답 받은 데이터들의 숫자를 출력 합니다.
                         Log.d(TAG, "응답 받은 데이터 숫자:" + list.size());
-                        Toast.makeText(mActivity, "응답 받은 데이터 숫자:" + list.size(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mActivity, "응답 받은 데이터 숫자:" + list.size(), Toast.LENGTH_SHORT).show();
 
                         // 받아 온 상품 정보를 차례로 호출 합니다.
                         for (int _sku_index = 0; _sku_index < list.size(); _sku_index++) {
@@ -195,7 +199,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                             // 해당 인덱스의 상품 정보를 출력하도록 합니다.
                             String tmmsg = _skuDetail.getSku() + ": " + _skuDetail.getTitle() + ", " + _skuDetail.getPrice() + ", " + _skuDetail.getDescription();
                             Log.d(TAG, tmmsg);
-                            Toast.makeText(mActivity, tmmsg, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mActivity, tmmsg, Toast.LENGTH_SHORT).show();
                         }
 
 

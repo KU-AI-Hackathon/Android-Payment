@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">KU_AI_Hackathon</string>
+    <color name="white">#FFFFFF</color>
 </resources>
