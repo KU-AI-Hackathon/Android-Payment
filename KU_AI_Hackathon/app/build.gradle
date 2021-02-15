@@ -8,7 +8,7 @@ android {
         applicationId "com.nextop.project.ku_ai_hackathon"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 3
+        versionCode 4
         versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
