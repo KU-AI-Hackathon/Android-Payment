@@ -7,30 +7,42 @@
     android:background="@color/white"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView2"
+    <TableLayout
+        android:id="@+id/tableLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="마스크 구매하기"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.273" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="264dp"
-        android:layout_height="263dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginLeft="72dp"
-        android:layout_marginTop="232dp"
-        android:background="#FFFFFF"
-        android:onClick="purchase"
-        android:scaleType="fitCenter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mask_1" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="자판기와 연결하려면 화면을 터치하세요." />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="272dp"
+            android:layout_height="703dp">
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="409dp"
+                android:layout_height="641dp"
+                android:layout_gravity="center"
+                android:background="#FFFFFF"
+                android:onClick="pairing"
+                android:scaleType="fitEnd"
+                app:srcCompat="@drawable/bluetooth" />
+        </TableRow>
+
+    </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
