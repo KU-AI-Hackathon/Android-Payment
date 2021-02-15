@@ -2,6 +2,7 @@ package com.nextop.project.ku_ai_hackathon;
 
 import android.app.Activity;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,12 +11,15 @@ import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +49,12 @@ public class BillingManager implements PurchasesUpdatedListener {
             for( Purchase _pur : list )
             {
                 Log.d( TAG, "결제에 대해 응답 받은 데이터 :"+ _pur.getOriginalJson() );
-                mBillingClient.consumeAsync( _pur.getPurchaseToken(), mConsumResListnere );
+
+                ConsumeParams consumeParams = ConsumeParams
+                        .newBuilder()
+                        .setPurchaseToken(_pur.getPurchaseToken())
+                        .build();
+                mBillingClient.consumeAsync( consumeParams , mConsumResListnere );
             }
         }
 
@@ -81,7 +90,7 @@ public class BillingManager implements PurchasesUpdatedListener {
         Log.d(TAG, "구글 결제 매니저를 초기화 하고 있습니다.");
 
         // 결제를 위한, 빌링 클라이언트를 생성합니다.
-        mBillingClient = BillingClient.newBuilder(mActivity).setListener(this).build();
+        mBillingClient = BillingClient.newBuilder(mActivity).enablePendingPurchases().setListener(this).build();
 
 
         // 구글 플레이와 연결을 시도합니다.
@@ -147,7 +156,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
         // 구글의 상품 정보들의 ID를 만들어 줍니다.
         List<String> Sku_ID_List = new ArrayList<>();
-        Sku_ID_List.add( "gwango_100" );
+        Sku_ID_List.add( "gwango_1000" );
 
 
         // SkuDetailsParam 객체를 만들어 줍니다. (1회성 소모품에 대한)
@@ -175,6 +184,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
                         // 응답 받은 데이터들의 숫자를 출력 합니다.
                         Log.d(TAG, "응답 받은 데이터 숫자:" + list.size());
+                        Toast.makeText(mActivity, "응답 받은 데이터 숫자:" + list.size(), Toast.LENGTH_SHORT).show();
 
                         // 받아 온 상품 정보를 차례로 호출 합니다.
                         for (int _sku_index = 0; _sku_index < list.size(); _sku_index++) {
@@ -183,8 +193,9 @@ public class BillingManager implements PurchasesUpdatedListener {
                             SkuDetails _skuDetail = list.get(_sku_index);
 
                             // 해당 인덱스의 상품 정보를 출력하도록 합니다.
-                            Log.d(TAG, _skuDetail.getSku() + ": " + _skuDetail.getTitle() + ", " + _skuDetail.getPrice() + ", " + _skuDetail.getDescription());
-
+                            String tmmsg = _skuDetail.getSku() + ": " + _skuDetail.getTitle() + ", " + _skuDetail.getPrice() + ", " + _skuDetail.getDescription();
+                            Log.d(TAG, tmmsg);
+                            Toast.makeText(mActivity, tmmsg, Toast.LENGTH_SHORT).show();
                         }
 
 
@@ -195,11 +206,11 @@ public class BillingManager implements PurchasesUpdatedListener {
         );
     }
 
-    public void purchase( SkuDetails skuDetails )
-    {
+    public void purchase( int index ) {
         BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-                .setSkuDetails(skuDetails)
+                .setSkuDetails(mSkuDetailsList.get(index))
                 .build();
         BillingResult responseCode = mBillingClient.launchBillingFlow(mActivity, flowParams);
+        Log.d(TAG,"Response Code : " + responseCode);
     }
 }

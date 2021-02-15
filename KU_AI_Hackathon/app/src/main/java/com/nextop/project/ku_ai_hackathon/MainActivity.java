@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void purchase(View view){
-        Log.e("purchase","purchase initiated");
+        bm.get_Sku_Detail_List();
+        //bm.purchase(0);
     }
 }
 
