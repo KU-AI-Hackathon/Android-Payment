@@ -25,7 +25,9 @@ public class BluetoothManager {
 
     private final int REQUEST_BLUETOOTH_ENABLE = 100;
 
+    private MainActivity ma;
     private Activity mActivity;
+    private TextView tv;
 
     ConnectedTask mConnectedTask = null;
     static BluetoothAdapter mBluetoothAdapter;
@@ -33,8 +35,10 @@ public class BluetoothManager {
     static boolean isConnectionError = false;
     private static final String TAG = "BluetoothClient";
 
-    public BluetoothManager(Activity _activity){
+    public BluetoothManager(Activity _activity,MainActivity ma, TextView tv){
+        this.ma = ma;
         mActivity = _activity;
+        this.tv = tv;
 
 
         Log.d( TAG, "Initalizing Bluetooth adapter...");
@@ -51,8 +55,6 @@ public class BluetoothManager {
         }
         else {
             Log.d(TAG, "Initialisation successful.");
-
-            showPairedDevicesListDialog();
         }
     }
 
@@ -85,6 +87,7 @@ public class BluetoothManager {
             }
 
             Log.d( TAG,  "connecting...");
+            tv.setText("해당 기기에 연결중입니다...");
         }
 
 
@@ -125,7 +128,7 @@ public class BluetoothManager {
 
                 isConnectionError = true;
                 Log.d( TAG,  "Unable to connect device");
-                showErrorDialog("Unable to connect device");
+                showErrorDialog("기기에 연결할 수 없습니다.");
             }
         }
     }
@@ -134,6 +137,7 @@ public class BluetoothManager {
     public void connected( BluetoothSocket socket ) {
         mConnectedTask = new ConnectedTask(socket);
         mConnectedTask.execute();
+        ma.pairingSuccess();
     }
 
 
@@ -143,8 +147,8 @@ public class BluetoothManager {
         final BluetoothDevice[] pairedDevices = devices.toArray(new BluetoothDevice[0]);
 
         if ( pairedDevices.length == 0 ){
-            showQuitDialog( "No devices have been paired.\n"
-                    +"You must pair it with another device.");
+            showQuitDialog( "페어링된 기기가 없습니다.\n"
+                    +"연결 전 페어링을 완료해주세요.");
             return;
         }
 
@@ -155,7 +159,7 @@ public class BluetoothManager {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle("Select device");
+        builder.setTitle("기기 선택");
         builder.setCancelable(false);
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
@@ -174,10 +178,10 @@ public class BluetoothManager {
     public void showErrorDialog(String message)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle("Quit");
+        builder.setTitle("종료");
         builder.setCancelable(false);
         builder.setMessage(message);
-        builder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("확인",  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -194,10 +198,10 @@ public class BluetoothManager {
     public void showQuitDialog(String message)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle("Quit");
+        builder.setTitle("종료");
         builder.setCancelable(false);
         builder.setMessage(message);
-        builder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("확인",  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -208,9 +212,9 @@ public class BluetoothManager {
     }
 
     void sendMessage(String msg){
-
         if ( mConnectedTask != null ) {
             Log.d(TAG, "send message: " + msg);
+            mConnectedTask.write(msg);
         }
     }
 

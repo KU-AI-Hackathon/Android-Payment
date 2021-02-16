@@ -12,10 +12,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Config;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
         ib = findViewById(R.id.imageButton2);
 
         bm = new BillingManager(this, this);
-        blem = new BluetoothManager(this);
+        blem = new BluetoothManager(this,this,tv);
+
+        tv.setText("자판기와 연결하려면 화면을 터치하세요.\n설정에서 HC06기기와 페어링을 완료한 후 연결을 진행해주세요.");
     }
 
     @Override
@@ -70,9 +74,15 @@ public class MainActivity extends AppCompatActivity {
     //
 
     public void pairing(View view){
+        blem.showPairedDevicesListDialog();
 
-        //success
+        // 메세지 전송 프로세스 추가 필요
+    }
+
+    public void pairingSuccess() {
+        blem.sendMessage("Msg from KU_AI_Hackathon");
         Toast.makeText(this, "자판기와 연결되었습니다.", Toast.LENGTH_SHORT).show();
+
         ib.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         ib.setImageResource(R.drawable.mask_1);
+
         tv.setText("마스크를 구매하시려면 화면을 터치하세요.");
     }
 
